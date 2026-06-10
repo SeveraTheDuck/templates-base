@@ -3,7 +3,7 @@
 
 project_name:
   type: str
-  help: "Project name (snake_case, e.g. my_project)"
+  help: "Project name (e.g. my-project)"
 
 project_description:
   type: str
