@@ -62,8 +62,16 @@
       );
 
       checks = forEachSystem (
-        system: {
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
           formatting = (treefmtEvalFor system).config.build.check self;
+          spelling = pkgs.runCommand "typos" {} ''
+            ${pkgs.typos}/bin/typos ${self}
+            touch $out
+          '';
         }
       );
     };

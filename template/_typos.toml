@@ -1,0 +1,6 @@
+[files]
+extend-exclude = [
+  "*.lock",
+  "LICENSES/",
+  "CHANGELOG.md",
+]

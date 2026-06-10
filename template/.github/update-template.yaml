@@ -1,0 +1,33 @@
+name: Update from template
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1"  # every Monday at 9:00 UTC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixpkgs-unstable
+
+      - name: Run copier update
+        run: nix run nixpkgs#copier -- update --defaults
+
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          title: "chore: update from base-template"
+          branch: copier-update
+          commit-message: "chore: update from base-template"
