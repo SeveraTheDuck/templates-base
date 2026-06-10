@@ -28,6 +28,14 @@
       entry = "${pkgs.commitlint-rs}/bin/commitlint --edit";
       stages = [ "commit-msg" ];
     };
+
+    reuse = {
+      enable = true;
+      name = "reuse";
+      description = "Check REUSE license compliance";
+      entry = "${pkgs.reuse}/bin/reuse lint";
+      pass_filenames = false;
+    };
   };
 
   # --- Shell ------------------------------------------------------------------

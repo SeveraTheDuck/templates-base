@@ -36,12 +36,3 @@ _answers_file: .copier/answers.base.yaml
 
 _migrations:
   - script: .copier/post-migration.sh
-
-_tasks:
-  - >-
-    reuse annotate
-    --license "{{ license }}"
-    --copyright "{{ author }}"
-    --recursive
-    --skip-unrecognised
-    .
