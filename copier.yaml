@@ -34,5 +34,10 @@ _min_copier_version: "9.0.0"
 _subdirectory: template
 _answers_file: .copier/answers.base.yaml
 
+_exclude:
+  - "{% if license != 'MIT' %}LICENSES/MIT.txt{% endif %}"
+  - "{% if license != 'Apache-2.0' %}LICENSES/Apache-2.0.txt{% endif %}"
+  - "{% if license != 'GPL-3.0-only' %}LICENSES/GPL-3.0-only.txt{% endif %}"
+
 _migrations:
   - script: .copier/post-migration.sh
