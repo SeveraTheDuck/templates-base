@@ -1,24 +1,18 @@
----
 # --- Questions ----------------------------------------------------------------
-
 project_name:
   type: str
   help: "Project name (e.g. my-project)"
-
 project_description:
   type: str
   help: "One-line description of the project"
   default: ""
-
 github_owner:
   type: str
   help: "GitHub username or org (e.g. alice)"
-
 author:
   type: str
   help: "Author name for copyright headers"
   default: "{{ github_owner }}"
-
 license:
   type: str
   help: "SPDX license identifier"
@@ -27,17 +21,16 @@ license:
     - Apache-2.0
     - GPL-3.0-only
   default: MIT
-
 # --- Copier settings ----------------------------------------------------------
-
 _min_copier_version: "9.0.0"
 _subdirectory: template
 _answers_file: .copier/answers.base.yaml
-
 _exclude:
+  - copier.yaml
+  - .copier/post-migration.sh
+  - template/
   - "{% if license != 'MIT' %}LICENSES/MIT.txt{% endif %}"
   - "{% if license != 'Apache-2.0' %}LICENSES/Apache-2.0.txt{% endif %}"
   - "{% if license != 'GPL-3.0-only' %}LICENSES/GPL-3.0-only.txt{% endif %}"
-
 _migrations:
   - script: .copier/post-migration.sh

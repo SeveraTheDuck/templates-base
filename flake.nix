@@ -1,0 +1,66 @@
+{
+  description = "templates-base: Opinionated base template for production-ready pet projects";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs =
+    {
+      self,
+      nixpkgs,
+      treefmt-nix,
+      pre-commit-hooks,
+      ...
+    }:
+    let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+
+      forEachSystem = nixpkgs.lib.genAttrs systems;
+
+      treefmtEvalFor =
+        system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} (import ./nix/treefmt.nix);
+    in
+    {
+      devShells = forEachSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          default = import ./nix/shell.nix {
+            inherit pkgs self pre-commit-hooks;
+            treefmtEval = treefmtEvalFor system;
+          };
+        }
+      );
+
+      formatter = forEachSystem (system: (treefmtEvalFor system).config.build.wrapper);
+
+      checks = forEachSystem (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        import ./nix/checks.nix {
+          inherit pkgs self;
+          treefmtEval = treefmtEvalFor system;
+        }
+      );
+    };
+}

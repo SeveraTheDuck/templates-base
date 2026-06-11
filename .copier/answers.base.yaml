@@ -1,0 +1,8 @@
+# Changes here will be overwritten by Copier
+_commit: 8cf07e6
+_src_path: .
+author: Alexander Antipov
+github_owner: SeveraTheDuck
+license: MIT
+project_description: Opinionated base template for production-ready pet projects
+project_name: templates-base
