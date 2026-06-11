@@ -9,21 +9,21 @@ concurrency:
   cancel-in-progress: true
 jobs:
   lint:
-    uses: ./.github/workflows/reusable/_lint.yaml
+    uses: ./.github/workflows/_lint.yaml
   commitlint:
-    uses: ./.github/workflows/reusable/_commitlint.yaml
+    uses: ./.github/workflows/_commitlint.yaml
   security:
-    uses: ./.github/workflows/reusable/_security.yaml
+    uses: ./.github/workflows/_security.yaml
   release:
     needs: [lint, commitlint, security]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/reusable/_release.yaml
+    uses: ./.github/workflows/_release.yaml
     secrets:
       release-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
   sbom:
     needs: release
     if: needs.release.outputs.release_created
-    uses: ./.github/workflows/reusable/_sbom.yaml
+    uses: ./.github/workflows/_sbom.yaml
     permissions:
       actions: read
       contents: write
