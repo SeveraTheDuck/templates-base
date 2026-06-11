@@ -8,8 +8,8 @@
 ## Getting started
 
 ```bash
-git clone https://github.com/{{github_owner}}/{{project_name}}
-cd {{project_name}}
+git clone https://github.com/SeveraTheDuck/templates-base
+cd templates-base
 direnv allow   # activates the devenv shell automatically
 just           # list available recipes
 ```
@@ -45,5 +45,5 @@ Breaking changes: add `BREAKING CHANGE:` in the commit footer.
 
 ## Reporting issues
 
-Use [GitHub Issues](https://github.com/{{github_owner}}/{{project_name}}/issues).
+Use [GitHub Issues](https://github.com/SeveraTheDuck/templates-base/issues).
 For security vulnerabilities see [SECURITY.md](SECURITY.md).

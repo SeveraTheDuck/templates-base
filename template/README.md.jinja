@@ -1,10 +1,7 @@
 # {{ project_name }}
-
 {% if project_description %}
-
 {{ project_description }}
 {% endif %}
-
 [![CI](https://github.com/{{ github_owner }}/{{ project_name }}/actions/workflows/ci.yaml/badge.svg)](https://github.com/{{ github_owner }}/{{ project_name }}/actions/workflows/ci.yaml)
 [![Release](https://img.shields.io/github/v/release/{{ github_owner }}/{{ project_name }})](https://github.com/{{ github_owner }}/{{ project_name }}/releases)
 [![License](https://img.shields.io/badge/license-{{ license | replace('-', '--') }}-blue.svg)](LICENSES/{{ license }}.txt)

@@ -12,7 +12,7 @@ what was decided, why, and what alternatives were considered.
 
 ## How to write an ADR
 
-Copy `0001-template.md`, increment the number, and fill in the sections.
+Copy `0000-template.md`, increment the number, and fill in the sections.
 Commit it alongside the code change it describes.
 
 ## Status values
