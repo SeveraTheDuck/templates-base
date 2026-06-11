@@ -2,7 +2,9 @@
 
 set -euo pipefail
 
-for sha in $(git rev-list origin/main..HEAD); do
+BASE="${1:-origin/main}"
+
+for sha in $(git rev-list "$BASE"..HEAD); do
   echo "Checking $sha"
-  git log --format=%B -n 1 "$sha" | commitlint --stdin
+  commitlint --from "$sha" --to "$sha"
 done
