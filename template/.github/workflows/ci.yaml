@@ -20,6 +20,9 @@ jobs:
     uses: ./.github/workflows/_release.yaml
     secrets:
       release-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
   sbom:
     needs: release
     if: needs.release.outputs.release_created
