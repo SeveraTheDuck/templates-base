@@ -18,5 +18,5 @@ for sha in $(git rev-list "$BASE"..HEAD); do
   fi
 
   echo "Checking $sha"
-  commitlint --from "$sha" --to "$sha"
+  commitlint --from "$sha-1" --to "$sha"
 done
