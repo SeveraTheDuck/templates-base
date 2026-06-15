@@ -1,5 +1,5 @@
 {
-  description = "{{project_name}}: {{project_description}}";
+  description = "{{ project_name }}: {{ project_description }}";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -24,6 +24,8 @@
       ...
     }:
     let
+      lib = nixpkgs.lib;
+
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -31,10 +33,36 @@
         "aarch64-darwin"
       ];
 
-      forEachSystem = nixpkgs.lib.genAttrs systems;
+      forEachSystem = lib.genAttrs systems;
+
+      # -- Optional language layer ---------------------------------------------
+      # A language template (e.g. templates-lang-cpp) drops `nix/lang.nix`.
+      # Base picks it up automatically; nothing here is edited per-language.
+      langPath = ./nix/lang.nix;
+      hasLang = builtins.pathExists langPath;
+
+      langFor =
+        pkgs:
+        if hasLang then
+          import langPath { inherit pkgs lib self; }
+        else
+          {
+            packages = [ ];
+            treefmt = { };
+            hooks = { };
+            checks = { };
+            shellHook = "";
+          };
 
       treefmtEvalFor =
-        system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} (import ./nix/treefmt.nix);
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          lang = langFor pkgs;
+        in
+        treefmt-nix.lib.evalModule pkgs {
+          imports = [ (import ./nix/treefmt.nix) ] ++ lib.optional hasLang lang.treefmt;
+        };
     in
     {
       devShells = forEachSystem (
@@ -46,6 +74,7 @@
           default = import ./nix/shell.nix {
             inherit pkgs self pre-commit-hooks;
             treefmtEval = treefmtEvalFor system;
+            lang = langFor pkgs;
           };
         }
       );
@@ -60,6 +89,7 @@
         import ./nix/checks.nix {
           inherit pkgs self;
           treefmtEval = treefmtEvalFor system;
+          lang = langFor pkgs;
         }
       );
     };

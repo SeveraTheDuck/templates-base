@@ -2,6 +2,7 @@
   pkgs,
   self,
   treefmtEval,
+  lang,
 }:
 
 {
@@ -17,3 +18,4 @@
     touch $out
   '';
 }
+// (lang.checks or { })

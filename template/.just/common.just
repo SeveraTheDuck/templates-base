@@ -1,5 +1,3 @@
-set allow-duplicate-recipes := true
-
 # Format all files
 fmt:
     treefmt
