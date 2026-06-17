@@ -3,10 +3,6 @@ description: Lint commit messages in the PR range against Conventional Commits.
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.sha }}
     - uses: ./.github/actions/setup-nix
     - shell: bash
       env:

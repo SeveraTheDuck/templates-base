@@ -28,6 +28,7 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/sbom
         with:
           tag: ${{ needs.release.outputs.tag_name }}
