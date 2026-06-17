@@ -45,5 +45,7 @@
       ];
 
       imports = moduleDirs;
+
+      perSystem._module.args.projectRoot = inputs.self.outPath;
     };
 }

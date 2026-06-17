@@ -2,16 +2,16 @@
 # treefmt registers its own `checks.treefmt`. Add spelling and licensing.
 # perSystem module.
 
-{ inputs, pkgs, ... }:
+{ projectRoot, pkgs, ... }:
 {
   checks = {
     spelling = pkgs.runCommand "typos" { } ''
-      ${pkgs.typos}/bin/typos ${inputs.self}
+      ${pkgs.typos}/bin/typos ${projectRoot}
       touch $out
     '';
 
     reuse = pkgs.runCommand "reuse" { } ''
-      ${pkgs.reuse}/bin/reuse --root ${inputs.self} lint
+      ${pkgs.reuse}/bin/reuse --root ${projectRoot} lint
       touch $out
     '';
   };
