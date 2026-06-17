@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0](https://github.com/SeveraTheDuck/templates-base/compare/v1.0.0...v1.1.0) (2026-06-17)
+
+
+### Features
+
+* add customization points ([7c2d7fa](https://github.com/SeveraTheDuck/templates-base/commit/7c2d7fa84e17368d7cc60eb933dfe5b901124ac0))
+* **nix:** add flake-parts ([709afc7](https://github.com/SeveraTheDuck/templates-base/commit/709afc7fe7e4ee79e3656538588af0c0164b0b20))
+
+
+### Bug Fixes
+
+* **ci:** commits checker loop ([3ba9e8c](https://github.com/SeveraTheDuck/templates-base/commit/3ba9e8cb9958d97c878b8f99e89ba9f9426479e4))
+* **copier:** self update from gh link ([9a1287d](https://github.com/SeveraTheDuck/templates-base/commit/9a1287d61d56de4024bd343d027a9ff831274813))
+* **nix:** per system self path ([c9eeca7](https://github.com/SeveraTheDuck/templates-base/commit/c9eeca7ea1977d354c9ea3415ace1239a1682d94))
+
 ## 1.0.0 (2026-06-11)
 
 
