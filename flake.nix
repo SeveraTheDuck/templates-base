@@ -2,28 +2,41 @@
   description = "templates-base: Opinionated base template for production-ready pet projects";
 
   inputs = {
+    # --- templates-base inputs ------------------------------------------------
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # --------------------------------------------------------------------------
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      treefmt-nix,
-      pre-commit-hooks,
-      ...
-    }:
+    inputs@{ flake-parts, ... }:
     let
+      lib = inputs.nixpkgs.lib;
+
+      # Customisation point: every nix/<name>/ with a default.nix is imported as a
+      # flake-parts module. To customise, add a directory.
+      moduleDirs = lib.pipe (builtins.readDir ./nix) [
+        (lib.filterAttrs (
+          name: type: type == "directory" && builtins.pathExists (./nix + "/${name}/default.nix")
+        ))
+        (lib.mapAttrsToList (name: _: ./nix + "/${name}"))
+      ];
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -31,36 +44,8 @@
         "aarch64-darwin"
       ];
 
-      forEachSystem = nixpkgs.lib.genAttrs systems;
+      imports = moduleDirs;
 
-      treefmtEvalFor =
-        system: treefmt-nix.lib.evalModule nixpkgs.legacyPackages.${system} (import ./nix/treefmt.nix);
-    in
-    {
-      devShells = forEachSystem (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = import ./nix/shell.nix {
-            inherit pkgs self pre-commit-hooks;
-            treefmtEval = treefmtEvalFor system;
-          };
-        }
-      );
-
-      formatter = forEachSystem (system: (treefmtEvalFor system).config.build.wrapper);
-
-      checks = forEachSystem (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        import ./nix/checks.nix {
-          inherit pkgs self;
-          treefmtEval = treefmtEvalFor system;
-        }
-      );
+      perSystem._module.args.projectRoot = inputs.self.outPath;
     };
 }
