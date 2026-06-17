@@ -1,0 +1,9 @@
+name: Lint
+description: Run nix flake check.
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v5
+    - uses: ./.github/actions/setup-nix
+    - shell: bash
+      run: nix flake check
