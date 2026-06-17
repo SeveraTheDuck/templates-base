@@ -3,25 +3,13 @@ description: Lint commit messages in the PR range against Conventional Commits.
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.ref }}
+    #    - uses: actions/checkout@v5
+    #      with:
+    #        fetch-depth: 0
+    #        ref: ${{ github.event.pull_request.head.ref }}
     - uses: ./.github/actions/setup-nix
     - shell: bash
       env:
         FROM: ${{ github.event.pull_request.base.sha }}
         TO: ${{ github.event.pull_request.head.sha }}
-      run: |
-        echo "### A: exact CI range"
-        nix shell nixpkgs#commitlint-rs --command commitlint --from "$FROM" --to "$TO" && echo "A ok" || echo "A FAIL"
-
-        echo "### B: per-commit loop over same range"
-        for s in $(git rev-list --reverse "${FROM}..${TO}"); do
-          git show -s --format=%B "$s" | nix shell nixpkgs#commitlint-rs --command commitlint && echo "  $s ok" || echo "  $s FAIL"
-        done
-
-        echo "### C: --to only the last commit message via stdin"
-        git show -s --format=%B "$TO" | nix shell nixpkgs#commitlint-rs --command commitlint && echo "C ok" || echo "C FAIL"
-
-        bash ${{ github.action_path }}/commitlint.sh
+      run: bash ${{ github.action_path }}/commitlint.sh
