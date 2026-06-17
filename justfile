@@ -1,6 +1,9 @@
+set allow-duplicate-recipes := true
+
 [private]
 default:
     @just --list
 
-import '.just/common.just'
-# import 'lang.just'  # added by language template
+# === templates-base imports ==================================================
+import '.just/base.just'
+# === end templates-base imports ==============================================

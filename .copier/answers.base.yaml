@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier
-_commit: 83b1e9d
-_src_path: .
+_commit: v1.0.0-7-gc92c206
+_src_path: gh:SeveraTheDuck/templates-base
 author: Alexander Antipov
 github_owner: SeveraTheDuck
 license: MIT
