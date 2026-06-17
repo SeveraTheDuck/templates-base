@@ -2,30 +2,41 @@
   description = "templates-base: Opinionated base template for production-ready pet projects";
 
   inputs = {
+    # --- templates-base inputs ------------------------------------------------
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # --------------------------------------------------------------------------
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      treefmt-nix,
-      pre-commit-hooks,
-      ...
-    }:
+    inputs@{ flake-parts, ... }:
     let
-      lib = nixpkgs.lib;
+      lib = inputs.nixpkgs.lib;
 
+      # Customisation point: every nix/<name>/ with a default.nix is imported as a
+      # flake-parts module. To customise, add a directory.
+      moduleDirs = lib.pipe (builtins.readDir ./nix) [
+        (lib.filterAttrs (
+          name: type: type == "directory" && builtins.pathExists (./nix + "/${name}/default.nix")
+        ))
+        (lib.mapAttrsToList (name: _: ./nix + "/${name}"))
+      ];
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -33,64 +44,6 @@
         "aarch64-darwin"
       ];
 
-      forEachSystem = lib.genAttrs systems;
-
-      # -- Optional language layer ---------------------------------------------
-      # A language template (e.g. templates-lang-cpp) drops `nix/lang.nix`.
-      # Base picks it up automatically; nothing here is edited per-language.
-      langPath = ./nix/lang.nix;
-      hasLang = builtins.pathExists langPath;
-
-      langFor =
-        pkgs:
-        if hasLang then
-          import langPath { inherit pkgs lib self; }
-        else
-          {
-            packages = [ ];
-            treefmt = { };
-            hooks = { };
-            checks = { };
-            shellHook = "";
-          };
-
-      treefmtEvalFor =
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          lang = langFor pkgs;
-        in
-        treefmt-nix.lib.evalModule pkgs {
-          imports = [ (import ./nix/treefmt.nix) ] ++ lib.optional hasLang lang.treefmt;
-        };
-    in
-    {
-      devShells = forEachSystem (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = import ./nix/shell.nix {
-            inherit pkgs self pre-commit-hooks;
-            treefmtEval = treefmtEvalFor system;
-            lang = langFor pkgs;
-          };
-        }
-      );
-
-      formatter = forEachSystem (system: (treefmtEvalFor system).config.build.wrapper);
-
-      checks = forEachSystem (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        import ./nix/checks.nix {
-          inherit pkgs self;
-          treefmtEval = treefmtEvalFor system;
-          lang = langFor pkgs;
-        }
-      );
+      imports = moduleDirs;
     };
 }

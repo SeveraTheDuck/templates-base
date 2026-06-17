@@ -4,5 +4,6 @@ set allow-duplicate-recipes := true
 default:
     @just --list
 
-import '.just/common.just'
-import? '.just/lang.just'
+# === templates-base imports ==================================================
+import '.just/base.just'
+# === end templates-base imports ==============================================
