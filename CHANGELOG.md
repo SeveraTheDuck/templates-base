@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.1](https://github.com/SeveraTheDuck/templates-base/compare/v1.1.0...v1.1.1) (2026-06-17)
+
+
+### Bug Fixes
+
+* **copier:** post-migration script ([b18d6e6](https://github.com/SeveraTheDuck/templates-base/commit/b18d6e6938c281d09e8c778057408ae86753b6f7))
+* **copier:** post-migration script ([a8c7ac0](https://github.com/SeveraTheDuck/templates-base/commit/a8c7ac02fd51a4d13889a3ada7db9e0d086493c8))
+* **copier:** post-migration script ([7556797](https://github.com/SeveraTheDuck/templates-base/commit/7556797221bd1ec7d401ee90e3d1287a404dccc3))
+* minor changes to different configs, chasing customization points ([1442474](https://github.com/SeveraTheDuck/templates-base/commit/14424748660531fa2427d9d434bd43d778e51d0f))
+* minor changes to different configs, chasing customization points ([e08cef4](https://github.com/SeveraTheDuck/templates-base/commit/e08cef4de57aed38c4b943eed412872559767a30))
+* minor changes to different configs, chasing customization points ([46923af](https://github.com/SeveraTheDuck/templates-base/commit/46923aff38ebe934ca3e1b70dd19ab43c8e2fd9e))
+
 ## [1.1.0](https://github.com/SeveraTheDuck/templates-base/compare/v1.0.0...v1.1.0) (2026-06-17)
 
 
