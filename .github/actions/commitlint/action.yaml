@@ -3,17 +3,13 @@ description: Lint commit messages in the PR range against Conventional Commits.
 runs:
   using: composite
   steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.ref }}
     - uses: ./.github/actions/setup-nix
     - shell: bash
       env:
         FROM: ${{ github.event.pull_request.base.sha }}
         TO: ${{ github.event.pull_request.head.sha }}
-      run: |
-        echo "HEAD is: $(git rev-parse HEAD)"
-        echo "TO   is: $TO"
-        echo "range commits:"
-        git rev-list --reverse "${FROM}..${TO}" | while read s; do
-          echo "  $s $(git show -s --format=%s "$s")"
-        done
-        echo "is HEAD == TO? $([ "$(git rev-parse HEAD)" = "$TO" ] && echo yes || echo NO)"
-        bash ${{ github.action_path }}/commitlint.sh
+      run: bash ${{ github.action_path }}/commitlint.sh
