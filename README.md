@@ -13,7 +13,7 @@ Opinionated base template for production-ready pet projects.
 - **Dev environment** — Nix + direnv, zero manual setup
 - **Formatting** — treefmt (taplo, shfmt, nixfmt, yamlfmt, jq)
 - **Linting** — typos, reuse lint, commitlint (Conventional Commits)
-- **CI** — GitHub Actions: lint, commitlint, gitleaks, release-please, SBOM
+- **CI** — GitHub Actions: lint, commitlint, gitleaks, CodeQL, release-please, SBOM
 - **Releases** — automated CHANGELOG, version.txt, GitHub releases via release-please
 - **License compliance** — REUSE/SPDX, supports MIT, Apache-2.0, GPL-3.0-only
 - **Dependency updates** — Renovate Bot (weekly, grouped)
@@ -29,8 +29,10 @@ Opinionated base template for production-ready pet projects.
 Generate a new project from this template:
 
 ```bash
-copier copy gh:SeveraTheDuck/templates-base my-project
+copier copy --trust gh:SeveraTheDuck/templates-base my-project
 ```
+
+`--trust` is required because the template declares migrations.
 
 You will be asked:
 
@@ -54,10 +56,13 @@ just
 
 ```bash
 cd my-project
-copier update
+copier update --trust -a .copier/answers.base.yaml
 ```
 
-Or automatically via the weekly `update-template.yaml` workflow that runs in generated projects.
+`--trust` is required (migrations); `-a` points at the non-default answers file.
+
+Or automatically via the weekly `update-template.yaml` workflow in generated
+projects — it updates every layer in the order declared in `.copier/update-order`.
 
 ## Architecture
 
@@ -68,7 +73,12 @@ templates-base          ← this repo, language-agnostic foundation
 # more available soon
 ```
 
-Language and feature templates are layered on top via Copier's `_inherit_from`.
+## Language/feature layers available soon.
+
+Language and feature layers are **separate Copier templates** applied on top of a
+generated project. Each reads the base's answers and adds its own files; layers
+compose through comment-delimited marker sections and Copier's 3-way update
+merge.
 
 ## Documentation
 
