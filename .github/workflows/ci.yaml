@@ -1,33 +1,32 @@
 name: CI
 on:
+  push:
+    branches:
+      - main
   pull_request:
-    branches: [dev]
 concurrency:
-  group: ci-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions:
-  contents: read
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: ./.github/actions/lint
-  security:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/security
+    uses: ./.github/workflows/_lint.yaml
   commitlint:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-      - uses: ./.github/actions/commitlint
+    uses: ./.github/workflows/_commitlint.yaml
+  security:
+    uses: ./.github/workflows/_security.yaml
+  release:
+    needs: [lint, commitlint, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/_release.yaml
+    secrets:
+      release-token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+    permissions:
+      contents: write
+      pull-requests: write
+  sbom:
+    needs: release
+    if: needs.release.outputs.release_created
+    uses: ./.github/workflows/_sbom.yaml
+    permissions:
+      actions: read
+      contents: write
