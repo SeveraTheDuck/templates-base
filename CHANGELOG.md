@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.2](https://github.com/SeveraTheDuck/templates-base/compare/v1.1.1...v1.1.2) (2026-06-20)
+
+
+### Bug Fixes
+
+* **codeowners:** rename to jinja ([52c208c](https://github.com/SeveraTheDuck/templates-base/commit/52c208c480402ab156791b8c3b87878a5536332a))
+* **codeowners:** rename to jinja ([9ec7608](https://github.com/SeveraTheDuck/templates-base/commit/9ec76082109361cbe91083bed512342b52a854b6))
+* **codeowners:** set correct code owner ([b5e6148](https://github.com/SeveraTheDuck/templates-base/commit/b5e6148870fa2d27fec493223ff1ac55f7a63cea))
+
 ## [1.1.1](https://github.com/SeveraTheDuck/templates-base/compare/v1.1.0...v1.1.1) (2026-06-17)
 
 
